@@ -84,7 +84,7 @@ export class VideosService {
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
-  @Cron('*/10 * * * * *')
+  // @Cron('*/10 * * * * *')
   async fetchVideosCron() {
     const response = await axios
       .get<{ items: VideoSnippet[] }>(
