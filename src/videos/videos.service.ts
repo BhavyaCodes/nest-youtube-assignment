@@ -51,7 +51,7 @@ export class VideosService {
       description: snippet.description,
       thumbnailUrl: snippet.thumbnails.default.url,
       youtubeVideoId: id,
-      title: snippet.channelTitle,
+      title: snippet.title,
       videoUrl: `https://www.youtube.com/watch?v=${id}`,
       publishedAt: snippet.publishedAt as unknown as Date,
     }));
@@ -94,6 +94,7 @@ export class VideosService {
             part: 'snippet',
             key: this.configService.get('YOUTUBE_API_KEY'),
             chart: 'mostPopular',
+            // pageToken: 'CAUQAA',
           },
         },
       )
@@ -101,7 +102,7 @@ export class VideosService {
         throw new InternalServerErrorException(err);
       });
 
-    console.log('fetched');
+    // console.log('fetched');
     this.addMultipleVideos(response.data.items);
   }
 }

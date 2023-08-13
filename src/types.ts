@@ -26,7 +26,7 @@ export type VideoSnippet = {
       standard: Thumbnail;
       maxres: Thumbnail;
     };
-    channelTitle: string;
+    // channelTitle: string;
     categoryId: string;
     // "liveBroadcastContent": string
     // "defaultLanguage": string
@@ -35,5 +35,10 @@ export type VideoSnippet = {
     // 	"description": string
     // },
     // "defaultAudioLanguage": "en"
+  };
+  nextPageToken: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
   };
 };
