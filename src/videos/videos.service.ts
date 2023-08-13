@@ -9,7 +9,7 @@ export class VideosService {
   }
 
   findAll() {
-    return `This action returns all videos`;
+    // return `This action returns all videos`;
   }
 
   findOne(id: number) {

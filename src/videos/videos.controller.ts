@@ -17,7 +17,8 @@ export class VideosController {
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
-    return this.videosService.create(createVideoDto);
+    console.log(createVideoDto);
+    // return this.videosService.create(createVideoDto);
   }
 
   @Get()
