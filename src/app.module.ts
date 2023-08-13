@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { VideosModule } from './videos/videos.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import ormConfig from './config/orm.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [ormConfig],
     }),
 
@@ -21,6 +22,7 @@ import ormConfig from './config/orm.config';
     //   password: 'postgres',
     // }),
     TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: ormConfig,
     }),
     VideosModule,
