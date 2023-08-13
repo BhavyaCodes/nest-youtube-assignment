@@ -56,11 +56,31 @@ export class VideosService {
       publishedAt: snippet.publishedAt as unknown as Date,
     }));
 
-    this.videosRepository
-      .createQueryBuilder()
-      .insert()
-      .values(videoEntitiesData)
-      .execute();
+    // console.log(
+    //   this.videosRepository
+    //     .createQueryBuilder()
+    //     .insert()
+    //     .values(videoEntitiesData.slice(0, 1))
+    //     .orUpdate([], ['youtubeVideoId'], {
+    //       // skipUpdateIfNoValuesChanged: true,
+    //     })
+    //     // .orIgnore() //  ON CONFLICT DO NOTHING
+    //     .getSql(),
+    //   // .execute(),
+    // );
+
+    // this.videosRepository
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .values(videoEntitiesData)
+    //   .orUpdate([], ['youtubeVideoId'], {
+    //     skipUpdateIfNoValuesChanged: true,
+    //   })
+    //   // .orIgnore() //  ON CONFLICT DO NOTHING
+    //   // .getSql()
+    //   .execute();
+
+    this.videosRepository.upsert(videoEntitiesData, ['youtubeVideoId']);
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
@@ -81,6 +101,7 @@ export class VideosService {
         throw new InternalServerErrorException(err);
       });
 
+    console.log('fetched');
     this.addMultipleVideos(response.data.items);
   }
 }
