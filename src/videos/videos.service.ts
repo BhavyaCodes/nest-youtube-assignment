@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -10,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import { VideoSnippet } from 'src/types';
 
 @Injectable()
 export class VideosService {
@@ -19,50 +22,65 @@ export class VideosService {
     private configService: ConfigService,
   ) {}
   create(createVideoDto: CreateVideoDto) {
-    // return 'This action adds a new video';
     const newVideo = this.videosRepository.create(createVideoDto);
-
-    return this.videosRepository.save(newVideo);
+    return this.videosRepository.save(newVideo).catch((err) => {
+      if (err.code == 23505) {
+        throw new HttpException('video already exists', HttpStatus.CONFLICT);
+      }
+      throw new InternalServerErrorException();
+    });
   }
 
   findAll() {
-    // return `This action returns all videos`;
     return this.videosRepository.find();
   }
 
   async findOne(id: string) {
-    // return `This action returns a #${id} video`;
     const video = await this.videosRepository.findOneBy({ id });
-    console.log(video);
     if (!video) {
       throw new BadRequestException('Video not found');
     }
     return video;
   }
 
-  // update(id: number, updateVideoDto: UpdateVideoDto) {
-  //   return `This action updates a #${id} video`;
-  // }
+  addMultipleVideos(items: VideoSnippet[]) {
+    const videoEntitiesData: Omit<
+      Video,
+      'id' | 'entryCreatedAt' | 'logInsert'
+    >[] = items.map(({ snippet, id }) => ({
+      description: snippet.description,
+      thumbnailUrl: snippet.thumbnails.default.url,
+      youtubeVideoId: id,
+      title: snippet.channelTitle,
+      videoUrl: `https://www.youtube.com/watch?v=${id}`,
+      publishedAt: snippet.publishedAt as unknown as Date,
+    }));
 
-  remove(id: number) {
-    return `This action removes a #${id} video`;
+    this.videosRepository
+      .createQueryBuilder()
+      .insert()
+      .values(videoEntitiesData)
+      .execute();
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
   @Cron('*/10 * * * * *')
   async fetchVideosCron() {
-    const data = await axios
-      .get('https://youtube.googleapis.com/youtube/v3/videos', {
-        params: {
-          part: 'snippet',
-          key: this.configService.get('YOUTUBE_API_KEY'),
-          chart: 'mostPopular',
+    const response = await axios
+      .get<{ items: VideoSnippet[] }>(
+        'https://youtube.googleapis.com/youtube/v3/videos',
+        {
+          params: {
+            part: 'snippet',
+            key: this.configService.get('YOUTUBE_API_KEY'),
+            chart: 'mostPopular',
+          },
         },
-      })
+      )
       .catch((err) => {
         throw new InternalServerErrorException(err);
       });
-    console.log(data.data);
-    console.log('cron');
+
+    this.addMultipleVideos(response.data.items);
   }
 }

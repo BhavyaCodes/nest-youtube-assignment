@@ -1,26 +1,40 @@
-import { Column, Entity, PrimaryGeneratedColumn, AfterInsert } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  AfterInsert,
+  Index,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Video {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ length: 100, nullable: false })
+  @Index({ unique: true })
+  youtubeVideoId: string;
+
   @Column({ length: 500, nullable: false })
   title: string;
 
-  @Column({ length: 2000, nullable: true })
-  description: string;
-
-  @Column({
-    type: 'timestamptz',
-  })
-  publishedAt: Date;
+  @Column({ length: 10000, nullable: true })
+  description?: string;
 
   @Column({ length: 300, nullable: false })
   thumbnailUrl: string;
 
   @Column({ length: 300, nullable: false })
   videoUrl: string;
+
+  @Column({ type: 'timestamptz' })
+  publishedAt: Date;
+
+  @CreateDateColumn({
+    type: 'timestamptz',
+  })
+  entryCreatedAt: Date;
 
   @AfterInsert()
   logInsert() {
