@@ -3,6 +3,7 @@ import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class VideosService {
@@ -38,5 +39,10 @@ export class VideosService {
 
   remove(id: number) {
     return `This action removes a #${id} video`;
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  fetchVideosCron() {
+    console.log('cron');
   }
 }

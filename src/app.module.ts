@@ -5,6 +5,7 @@ import { VideosModule } from './videos/videos.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import ormConfig from './config/orm.config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -13,14 +14,7 @@ import ormConfig from './config/orm.config';
       envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [ormConfig],
     }),
-
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: '127.0.0.1',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'postgres',
-    // }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: ormConfig,
