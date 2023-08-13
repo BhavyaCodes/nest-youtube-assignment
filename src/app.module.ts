@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import ormConfig from './config/orm.config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       useFactory: ormConfig,
     }),
     VideosModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
