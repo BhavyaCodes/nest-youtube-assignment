@@ -1,15 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class VideosService {
   constructor(
     @InjectRepository(Video)
     private videosRepository: Repository<Video>,
+    private configService: ConfigService,
   ) {}
   create(createVideoDto: CreateVideoDto) {
     // return 'This action adds a new video';
@@ -41,8 +48,21 @@ export class VideosService {
     return `This action removes a #${id} video`;
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
-  fetchVideosCron() {
+  // @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron('*/10 * * * * *')
+  async fetchVideosCron() {
+    const data = await axios
+      .get('https://youtube.googleapis.com/youtube/v3/videos', {
+        params: {
+          part: 'snippet',
+          key: this.configService.get('YOUTUBE_API_KEY'),
+          chart: 'mostPopular',
+        },
+      })
+      .catch((err) => {
+        throw new InternalServerErrorException(err);
+      });
+    console.log(data.data);
     console.log('cron');
   }
 }
