@@ -1,1 +1,3 @@
 - [ ] add uuid validation on param
+- [ ] add serializer to hide password
+- [ ] move Exceptions from services to controllers
