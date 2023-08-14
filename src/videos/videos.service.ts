@@ -4,21 +4,25 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
+// import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { VideoSnippet } from 'src/types';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class VideosService {
   constructor(
     @InjectRepository(Video)
     private videosRepository: Repository<Video>,
+    @InjectRepository(Video)
+    private usersRepository: Repository<User>,
     private configService: ConfigService,
   ) {}
   create(createVideoDto: CreateVideoDto) {
@@ -105,5 +109,32 @@ export class VideosService {
 
     // console.log('fetched');
     this.addMultipleVideos(response.data.items);
+  }
+
+  async addToWatchLater(youtubeVideoId: string, user: any) {
+    const videoToWatchLater = await this.videosRepository.findOneBy({
+      youtubeVideoId,
+    });
+
+    if (!videoToWatchLater) {
+      throw new NotFoundException();
+    }
+
+    console.log(user.sub);
+
+    return await this.usersRepository
+      .createQueryBuilder()
+      .relation(User, 'watchLater')
+      .of(user.sub)
+      .add(videoToWatchLater.id);
+
+    // this.usersRepository
+    //   .createQueryBuilder()
+    //   .relation('watchLaterVideos')
+    //   .of(user.id)
+    //   .add(videoToWatchLater);
+    // user.watchLaterVideos.push(videoToWatchLater);
+    // const userEntity = this.usersRepository.create(user);
+    // userEntity.watchLaterVideos.push();
   }
 }

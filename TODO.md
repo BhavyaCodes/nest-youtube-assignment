@@ -3,3 +3,4 @@
 - [ ] move Exceptions from services to controllers
 - [ ] serialize data (trim, etc)
 - [ ] improve env config service
+- [ ] use Logger

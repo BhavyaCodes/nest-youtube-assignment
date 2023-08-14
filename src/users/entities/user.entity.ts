@@ -21,7 +21,7 @@ export class User {
 
   @ManyToMany(() => Video)
   @JoinTable()
-  watchLaterVideo: Video[];
+  watchLater: Video[];
 
   @CreateDateColumn({
     type: 'timestamptz',
