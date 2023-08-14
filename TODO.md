@@ -1,3 +1,5 @@
 - [ ] add uuid validation on param
 - [ ] add serializer to hide password
 - [ ] move Exceptions from services to controllers
+- [ ] serialize data (trim, etc)
+- [ ] improve env config service

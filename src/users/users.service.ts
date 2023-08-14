@@ -26,6 +26,10 @@ export class UsersService {
       throw new InternalServerErrorException();
     });
   }
+
+  getUserByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email });
+  }
   // findAll() {
   //   return `This action returns all users`;
   // }
