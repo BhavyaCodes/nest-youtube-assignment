@@ -19,19 +19,13 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
-  @Post()
-  create(@Body() createVideoDto: CreateVideoDto) {
-    return this.videosService.create(createVideoDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.videosService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.videosService.findOne(id);
+  @UseGuards(AuthGuard)
+  @Get('watchlater')
+  async getWatchLaterByUserId(@Request() req) {
+    if (!req.user) {
+      throw new UnauthorizedException();
+    }
+    return this.videosService.getWatchLaterByUserId(req.user.sub);
   }
 
   @UseGuards(AuthGuard)
@@ -81,5 +75,20 @@ export class VideosController {
     );
     console.log(data);
     return data;
+  }
+
+  @Post()
+  create(@Body() createVideoDto: CreateVideoDto) {
+    return this.videosService.create(createVideoDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.videosService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.videosService.findOne(id);
   }
 }

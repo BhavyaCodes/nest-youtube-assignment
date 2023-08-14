@@ -48,17 +48,16 @@ export class VideosService {
   }
 
   addMultipleVideos(items: VideoSnippet[]) {
-    const videoEntitiesData: Omit<
-      Video,
-      'id' | 'entryCreatedAt' | 'logInsert'
-    >[] = items.map(({ snippet, id }) => ({
-      description: snippet.description,
-      thumbnailUrl: snippet.thumbnails.default.url,
-      id,
-      title: snippet.title,
-      videoUrl: `https://www.youtube.com/watch?v=${id}`,
-      publishedAt: snippet.publishedAt as unknown as Date,
-    }));
+    const videoEntitiesData: Partial<Video>[] = items.map(
+      ({ snippet, id }) => ({
+        description: snippet.description,
+        thumbnailUrl: snippet.thumbnails.default.url,
+        id,
+        title: snippet.title,
+        videoUrl: `https://www.youtube.com/watch?v=${id}`,
+        publishedAt: snippet.publishedAt as unknown as Date,
+      }),
+    );
 
     // console.log(
     //   this.videosRepository
@@ -108,6 +107,39 @@ export class VideosService {
 
     // console.log('fetched');
     this.addMultipleVideos(response.data.items);
+  }
+
+  async getWatchLaterByUserId(userId: string) {
+    // this.usersRepository.find({
+    //   relations: { watchLater: true },
+    //   loadEagerRelations: false,
+    //   where: {
+    //     // watchLater: {
+    //     //   id: userId,
+    //     // },
+    //     id: userId,
+    //   },
+    //   select: {},
+    // });
+    // const result = await this.usersRepository
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.watchLater', 'video')
+    //   .getMany();
+    // console.log(result);
+    // const rawData = await this.usersRepository.query(
+    //   `SELECT video.title, user.id, user.email FROM user_watch_later_video LEFT JOIN "user" as p ON v`,
+    // );
+    // const rawData = await this.usersRepository.query(`SELECT * FROM "user"`);
+    // console.log(rawData);
+
+    const rawData = await this.usersRepository.query(
+      // `SELECT * FROM user_watch_later_video p JOIN "user" on "user".id = p."userId"`,
+      // `SELECT * FROM user_watch_later_video p JOIN "video" on "video".id = p."videoId"`,
+      'SELECT * FROM user_watch_later_video p JOIN "video" on "video".id = p."videoId" WHERE p."userId" = $1 ;',
+      [userId],
+    );
+
+    return rawData;
   }
 
   async addToWatchLater(videoId: string, user: any) {

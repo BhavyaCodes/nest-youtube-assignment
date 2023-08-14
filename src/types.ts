@@ -10,7 +10,7 @@ export type VideoSnippet = {
   /**
    * unique youtube id
    */
-  id: 'jObOjhUkf50';
+  id: string;
   snippet: {
     /**
      * date string
