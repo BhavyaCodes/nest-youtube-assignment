@@ -9,7 +9,7 @@ import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { VideoSnippet } from 'src/types';
@@ -126,5 +126,11 @@ export class VideosService {
       .add(videoToWatchLater.id);
   }
 
-  // async removeFromWatchLater(youtubeVideoId: string)
+  removeFromWatchLater(videoId: string, userId: string) {
+    return this.usersRepository
+      .createQueryBuilder()
+      .relation(User, 'watchLater')
+      .of(userId)
+      .remove(videoId);
+  }
 }

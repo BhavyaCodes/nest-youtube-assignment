@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   NotFoundException,
+  Delete,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
@@ -35,7 +36,7 @@ export class VideosController {
 
   @UseGuards(AuthGuard)
   @Post('watchlater/:id')
-  async wishlist(@Param('id') youtubeVideoId: string, @Request() req) {
+  async addToWatchLater(@Param('id') youtubeVideoId: string, @Request() req) {
     if (!req.user) {
       throw new UnauthorizedException();
     }
@@ -51,7 +52,7 @@ export class VideosController {
         error.code = 404;
         throw error;
       }
-      return { message: 'video wishlisted', videoId: youtubeVideoId };
+      return { message: 'video added to watch later', videoId: youtubeVideoId };
     } catch (error: any) {
       if (error.code == 404) {
         throw new NotFoundException('Video not found');
@@ -59,11 +60,26 @@ export class VideosController {
       if (error.code == '23505') {
         // not sending error code on purpose
         return {
-          message: 'video already in wishlist',
+          message: 'video already in watch later',
           videoId: youtubeVideoId,
         };
       }
       throw new InternalServerErrorException();
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('watchlater/:id')
+  async removeFromWishlist(@Param('id') videoId: string, @Request() req) {
+    if (!req.user) {
+      throw new UnauthorizedException();
+    }
+
+    const data = await this.videosService.removeFromWatchLater(
+      videoId,
+      req.user.sub,
+    );
+    console.log(data);
+    return data;
   }
 }

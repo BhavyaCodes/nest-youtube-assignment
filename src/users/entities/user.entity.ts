@@ -19,7 +19,7 @@ export class User {
   @Column({ nullable: false, length: 200 })
   password: string;
 
-  @ManyToMany(() => Video)
+  @ManyToMany(() => Video, { cascade: true })
   @JoinTable()
   watchLater: Video[];
 
