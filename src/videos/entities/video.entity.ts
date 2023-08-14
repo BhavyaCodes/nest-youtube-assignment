@@ -1,20 +1,15 @@
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
   AfterInsert,
-  Index,
   CreateDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
 export class Video {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: string;
-
-  @Column({ length: 100, nullable: false })
-  @Index({ unique: true })
-  youtubeVideoId: string;
 
   @Column({ length: 500, nullable: false })
   title: string;

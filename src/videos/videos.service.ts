@@ -4,7 +4,6 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
@@ -55,7 +54,7 @@ export class VideosService {
     >[] = items.map(({ snippet, id }) => ({
       description: snippet.description,
       thumbnailUrl: snippet.thumbnails.default.url,
-      youtubeVideoId: id,
+      id,
       title: snippet.title,
       videoUrl: `https://www.youtube.com/watch?v=${id}`,
       publishedAt: snippet.publishedAt as unknown as Date,
@@ -85,7 +84,7 @@ export class VideosService {
     //   // .getSql()
     //   .execute();
 
-    this.videosRepository.upsert(videoEntitiesData, ['youtubeVideoId']);
+    this.videosRepository.upsert(videoEntitiesData, ['id']);
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
@@ -111,13 +110,13 @@ export class VideosService {
     this.addMultipleVideos(response.data.items);
   }
 
-  async addToWatchLater(youtubeVideoId: string, user: any) {
+  async addToWatchLater(videoId: string, user: any) {
     const videoToWatchLater = await this.videosRepository.findOneBy({
-      youtubeVideoId,
+      id: videoId,
     });
 
     if (!videoToWatchLater) {
-      throw new NotFoundException();
+      return null;
     }
 
     return await this.usersRepository
@@ -126,4 +125,6 @@ export class VideosService {
       .of(user.sub)
       .add(videoToWatchLater.id);
   }
+
+  // async removeFromWatchLater(youtubeVideoId: string)
 }

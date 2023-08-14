@@ -13,7 +13,7 @@ export class CreateVideoDto {
 
   @IsString()
   @IsNotEmpty()
-  youtubeVideoId: string;
+  id: string;
 
   @IsString()
   @IsOptional()

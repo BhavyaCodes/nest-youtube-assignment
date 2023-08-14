@@ -8,6 +8,7 @@ import {
   Request,
   UnauthorizedException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
@@ -40,10 +41,21 @@ export class VideosController {
     }
 
     try {
-      await this.videosService.addToWatchLater(youtubeVideoId, req.user);
+      const result = await this.videosService.addToWatchLater(
+        youtubeVideoId,
+        req.user,
+      );
+      console.log(result);
+      if (result === null) {
+        const error: any = new Error('not found');
+        error.code = 404;
+        throw error;
+      }
       return { message: 'video wishlisted', videoId: youtubeVideoId };
     } catch (error: any) {
-      // unique index conflict
+      if (error.code == 404) {
+        throw new NotFoundException('Video not found');
+      }
       if (error.code == '23505') {
         // not sending error code on purpose
         return {
