@@ -24,7 +24,8 @@ export class VideosService {
   create(createVideoDto: CreateVideoDto) {
     const newVideo = this.videosRepository.create(createVideoDto);
     return this.videosRepository.save(newVideo).catch((err) => {
-      if (err.code == 23505) {
+      // unique index conflict
+      if (err.code == '23505') {
         throw new HttpException('video already exists', HttpStatus.CONFLICT);
       }
       throw new InternalServerErrorException();
@@ -84,7 +85,7 @@ export class VideosService {
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
-  @Cron('*/10 * * * * *')
+  // @Cron('*/10 * * * * *')
   async fetchVideosCron() {
     const response = await axios
       .get<{ items: VideoSnippet[] }>(

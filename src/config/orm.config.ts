@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { Video } from 'src/videos/entities/video.entity';
 
 export default registerAs('orm.config', (): TypeOrmModuleOptions => {
@@ -10,7 +11,7 @@ export default registerAs('orm.config', (): TypeOrmModuleOptions => {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Video],
+    entities: [Video, User],
     synchronize: process.env.NODE_ENV === 'production' ? false : true,
   };
 });
