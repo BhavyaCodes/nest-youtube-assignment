@@ -7,6 +7,7 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
@@ -33,12 +34,24 @@ export class VideosController {
 
   @UseGuards(AuthGuard)
   @Post('watchlater/:id')
-  wishlist(@Param('id') youtubeVideoId: string, @Request() req) {
+  async wishlist(@Param('id') youtubeVideoId: string, @Request() req) {
     if (!req.user) {
       throw new UnauthorizedException();
     }
 
-    console.log(req.user);
-    return this.videosService.addToWatchLater(youtubeVideoId, req.user);
+    try {
+      await this.videosService.addToWatchLater(youtubeVideoId, req.user);
+      return { message: 'video wishlisted', videoId: youtubeVideoId };
+    } catch (error: any) {
+      // unique index conflict
+      if (error.code == '23505') {
+        // not sending error code on purpose
+        return {
+          message: 'video already in wishlist',
+          videoId: youtubeVideoId,
+        };
+      }
+      throw new InternalServerErrorException();
+    }
   }
 }

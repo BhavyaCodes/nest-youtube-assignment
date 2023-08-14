@@ -4,3 +4,4 @@
 - [ ] serialize data (trim, etc)
 - [ ] improve env config service
 - [ ] use Logger
+- [ ] add type to req.user

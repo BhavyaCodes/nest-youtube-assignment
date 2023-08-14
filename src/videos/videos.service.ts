@@ -120,21 +120,10 @@ export class VideosService {
       throw new NotFoundException();
     }
 
-    console.log(user.sub);
-
     return await this.usersRepository
       .createQueryBuilder()
       .relation(User, 'watchLater')
       .of(user.sub)
       .add(videoToWatchLater.id);
-
-    // this.usersRepository
-    //   .createQueryBuilder()
-    //   .relation('watchLaterVideos')
-    //   .of(user.id)
-    //   .add(videoToWatchLater);
-    // user.watchLaterVideos.push(videoToWatchLater);
-    // const userEntity = this.usersRepository.create(user);
-    // userEntity.watchLaterVideos.push();
   }
 }
