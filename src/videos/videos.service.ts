@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { Repository } from 'typeorm';
@@ -87,7 +88,7 @@ export class VideosService {
   }
 
   // @Cron(CronExpression.EVERY_30_SECONDS)
-  // @Cron('*/10 * * * * *')
+  @Cron('*/10 * * * * *')
   async fetchVideosCron() {
     const response = await axios
       .get<{ items: VideoSnippet[] }>(
@@ -148,14 +149,27 @@ export class VideosService {
     });
 
     if (!videoToWatchLater) {
-      return null;
+      throw new NotFoundException('Video not found');
     }
 
-    return await this.usersRepository
-      .createQueryBuilder()
-      .relation(User, 'watchLater')
-      .of(user.sub)
-      .add(videoToWatchLater.id);
+    try {
+      const data = await this.usersRepository
+        .createQueryBuilder()
+        .relation(User, 'watchLater')
+        .of(user.sub)
+        .add(videoToWatchLater.id);
+
+      return data;
+    } catch (error: any) {
+      if (error.code == '23505') {
+        // not sending error code on purpose
+        return {
+          message: 'video already in watch later',
+        };
+      }
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   removeFromWatchLater(videoId: string, userId: string) {

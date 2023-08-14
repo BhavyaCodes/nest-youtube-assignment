@@ -12,6 +12,8 @@ export default registerAs('orm.config', (): TypeOrmModuleOptions => {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Video, User],
-    synchronize: process.env.NODE_ENV === 'production' ? false : true,
+    // @@@@@@@@@@@@@@@@@@@@@ NEVER USE synchronize in real world production app @@@@@@@@@@@@@@@@@@@@@@@@@@
+    // synchronize: process.env.NODE_ENV === 'production' ? false : true,
+    synchronize: true,
   };
 });

@@ -35,31 +35,9 @@ export class VideosController {
       throw new UnauthorizedException();
     }
 
-    try {
-      const result = await this.videosService.addToWatchLater(
-        youtubeVideoId,
-        req.user,
-      );
-      console.log(result);
-      if (result === null) {
-        const error: any = new Error('not found');
-        error.code = 404;
-        throw error;
-      }
-      return { message: 'video added to watch later', videoId: youtubeVideoId };
-    } catch (error: any) {
-      if (error.code == 404) {
-        throw new NotFoundException('Video not found');
-      }
-      if (error.code == '23505') {
-        // not sending error code on purpose
-        return {
-          message: 'video already in watch later',
-          videoId: youtubeVideoId,
-        };
-      }
-      throw new InternalServerErrorException();
-    }
+    await this.videosService.addToWatchLater(youtubeVideoId, req.user);
+
+    return { message: 'video added to watch later', videoId: youtubeVideoId };
   }
 
   @UseGuards(AuthGuard)
