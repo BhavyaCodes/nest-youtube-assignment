@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "420082c2-fcc3-429e-a93c-8b2d2d599631",
+		"name": "nest-youtube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11126204"
+	},
+	"item": [
+		{
+			"name": "Videos",
+			"item": [
+				{
+					"name": "add to watch later",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/videos/watchlater/k1tOs9zAstk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"videos",
+								"watchlater",
+								"k1tOs9zAstk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove from watch later",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/videos/watchlater/jObOjhUkf50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"videos",
+								"watchlater",
+								"jObOjhUkf50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"asdfasdf\",\n    \"description\": \"descccccc\",\n    \"publishedAt\": \"2023-08-13T08:24:09.764Z\",\n    \"thumbnailUrl\": \"https://www.linkedin.com/feed/\",\n    \"videoUrl\": \"https://www.linkedin.com/feed/\",\n    \"youtubeVideoId\": \"asasdadasdd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/videos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/videos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "watch later",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/videos/watchlater",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"videos",
+								"watchlater"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"bhavyaaaaaa@test.com\",\n    \"password\": \"testtest\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"bhavya@test.com\",\n    \"password\": \"testtest\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "latest youtube videos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&key=AIzaSyBFwQhzNZ6RvR8pJBlIve5wBj5SBB9uHTI&chart=mostPopular&pageToken=CAUQAA",
+					"protocol": "https",
+					"host": [
+						"youtube",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"videos"
+					],
+					"query": [
+						{
+							"key": "part",
+							"value": "snippet"
+						},
+						{
+							"key": "key",
+							"value": "AIzaSyBFwQhzNZ6RvR8pJBlIve5wBj5SBB9uHTI"
+						},
+						{
+							"key": "chart",
+							"value": "mostPopular"
+						},
+						{
+							"key": "pageToken",
+							"value": "CAUQAA"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YzBkYzdhMS1jY2ZiLTQxZTQtODc4NC1mNWEyNWUxNGU3NjciLCJlbWFpbCI6ImJoYXZ5YUB0ZXN0LmNvbSIsImlhdCI6MTY5MjAyNzE4MywiZXhwIjoxNjkyMDMwNzgzfQ.QjLNftr5CfX_bhwXf3t6I3wpgb-5eK2Kpdge59epYbE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
