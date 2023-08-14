@@ -1,7 +1,10 @@
+import { Video } from 'src/videos/entities/video.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,6 +18,10 @@ export class User {
 
   @Column({ nullable: false, length: 200 })
   password: string;
+
+  @ManyToMany(() => Video)
+  @JoinTable()
+  watchLater: Video[];
 
   @CreateDateColumn({
     type: 'timestamptz',
