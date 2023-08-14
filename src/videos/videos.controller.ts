@@ -7,8 +7,6 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
-  InternalServerErrorException,
-  NotFoundException,
   Delete,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
